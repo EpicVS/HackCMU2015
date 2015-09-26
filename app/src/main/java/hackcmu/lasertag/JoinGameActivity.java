@@ -222,8 +222,15 @@ public class JoinGameActivity extends Activity implements
             Type type = new TypeToken<HashMap<String, String>>(){}.getType();
             HashMap<String, String> map = gson.fromJson(new String(payload), type);
             if (map.containsKey("gameStart")) {
-                //VARUN HERE WE SWITCH TO THE GAME FRAGMENT
-                //SET THE SCORE TO 0, 0
+
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.available_games_fragment_holder, gameFragment);
+                transaction.commit();
+
+
+                gameFragment.updateScore(0,0);
+
+
             } else if (map.containsKey("target")) {
                 //write logic to deal with shooting
                 String shooter = map.get("shooter");
@@ -231,9 +238,13 @@ public class JoinGameActivity extends Activity implements
                 Toast.makeText(getApplicationContext(), shooter + " has shot " + target + "!", Toast.LENGTH_SHORT).show();
                 int redScore = Integer.getInteger(map.get("redScore"));
                 int blueScore = Integer.getInteger(map.get("blueScore"));
-                //VARUN SET THE SCORE HERE
+
+
+                gameFragment.updateScore(redScore,blueScore);
+
+
             } else if (map.containsKey("gameEnd")) {
-                //endgame
+                gameFragment.gameOver();
             }
         }
     }

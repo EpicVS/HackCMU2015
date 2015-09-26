@@ -9,6 +9,7 @@ import android.os.Bundle;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.FrameLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,5 +80,13 @@ public class GameFragment extends Fragment {
         ((JoinGameActivity) getActivity()).sendShotBarcode(barcode);
     }
 
+    public void gameOver(){
+        TextView t = new TextView(getContext());
+        t.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        t.setTextSize(60);
+        t.setText("Game Over");
+
+        ((FrameLayout) getActivity().findViewById(R.id.placeholder)).addView(t);
+    }
 
 }
