@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LaserTag</string>
+    <string name="app_name">Tartan Tag</string>
 
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
@@ -11,10 +11,10 @@
     <string name="action_example">Example action</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_host_game">Host Game</string>
+    <string name="title_activity_host_game">Tartan Tag</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_join_game">Join Game</string>
+    <string name="title_activity_join_game">Tartan Tag</string>
     <string name="title_activity_how_to_play">How to Play</string>
 
 
