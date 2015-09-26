@@ -203,11 +203,6 @@ public class JoinGameActivity extends Activity implements
                     public void onConnectionResponse(String remoteEndpointId, Status status,
                                                      byte[] bytes) {
                         if (status.isSuccess()) {
-                            // send message for testing purposes
-                            byte[] payload = ("Hello, World! This is a message from client to the host named " + hostName).getBytes();
-                            Nearby.Connections.sendReliableMessage(mGoogleApiClient, hostEndpointId, payload);
-                            Log.d("Client", "Message sent.");
-
                             hostEndpointId = endpointId;
                             hostName = endpointName;
 
