@@ -17,5 +17,10 @@
     <string name="title_activity_join_game">Join Game</string>
     <string name="title_activity_how_to_play">How to Play</string>
 
+<<<<<<< HEAD
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+=======
     <string name="service_id">hackcmu.lasertag</string>
+>>>>>>> 772de1cd9bf74b69513c96e2a7c85136c3ca3a19
 </resources>
