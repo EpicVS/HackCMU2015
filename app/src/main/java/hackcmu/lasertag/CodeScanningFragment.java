@@ -27,7 +27,7 @@ public class CodeScanningFragment extends Fragment {
         loadLibrary("scanditsdk-android-4.8.1");
     }
     private CameraSource mSource;
-
+    private boolean alreadyScanned = false;
     private TextView redScore, blueScore;
 
     @Override
@@ -54,12 +54,13 @@ public class CodeScanningFragment extends Fragment {
         ScanditView scanditView = new ScanditView(this.getActivity()) {
             public void onScan(ScanditSDKScanSession scanditSDKScanSession, Activity a) {
                 List<ScanditSDKCode> codes = scanditSDKScanSession.getAllCodes();
-                if (codes.size() > 0) {
+                if (codes.size() > 0 && !alreadyScanned) {
                     Context context = a.getApplicationContext();
                     ScanditSDKCode code = codes.get(0);
                     sendMyBarcode(code.getData());
-
-                    this.stopScanning();
+                    alreadyScanned = true;
+                    
+                    this.pauseScanning();
                 }
             }
         };
@@ -69,9 +70,8 @@ public class CodeScanningFragment extends Fragment {
     }
 
     public void sendMyBarcode(String barcode){
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-                "Thank You. The game will start when everyone scans their codes.", Toast.LENGTH_LONG);
-        toast.show();
+        Toast.makeText(getActivity().getApplicationContext(),
+                "Thank You. The game will start when everyone scans their codes.", Toast.LENGTH_LONG).show();
 
         ((JoinGameActivity) getActivity()).sendMyBarcode(barcode);
 

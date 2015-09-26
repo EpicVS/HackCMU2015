@@ -190,7 +190,7 @@ public class JoinGameActivity extends Activity implements
         sendJson(json);
     }
 
-    private void connectTo(String endpointId, final String endpointName) {
+    private void connectTo(final String endpointId, final String endpointName) {
         // Send a connection request to a remote endpoint. By passing 'null' for
         // the name, the Nearby Connections API will construct a default name
         // based on device model such as 'LGE Nexus 5'.
@@ -207,6 +207,10 @@ public class JoinGameActivity extends Activity implements
                             byte[] payload = ("Hello, World! This is a message from client to the host named " + hostName).getBytes();
                             Nearby.Connections.sendReliableMessage(mGoogleApiClient, hostEndpointId, payload);
                             Log.d("Client", "Message sent.");
+
+                            hostEndpointId = endpointId;
+                            hostName = endpointName;
+
                         } else {
                             Log.d("Client", "Connection request unsuccessful.");
                         }
