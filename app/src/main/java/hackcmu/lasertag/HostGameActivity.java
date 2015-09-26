@@ -218,7 +218,7 @@ public class HostGameActivity extends Activity implements
             // check whether all players are ready
             allPlayersReady = true;
             for (int j = 0; j < players.size(); j++) {
-                if (!players.get(i).getAsJsonObject().has("barcode")) {
+                if (!players.get(j).getAsJsonObject().has("barcode")) {
                     allPlayersReady = false;
                 }
             }
