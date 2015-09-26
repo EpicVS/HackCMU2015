@@ -40,6 +40,7 @@ public class HostGameActivity extends Activity implements
 
     // Identify if the device is the host
     private boolean mIsHost = true;
+    private boolean stopped = false;
     private String gameName;
     private GoogleApiClient mGoogleApiClient;
     // each player JSON has attributes endpointId, deviceId, endpointName, barcode
@@ -107,7 +108,7 @@ public class HostGameActivity extends Activity implements
                     myPayload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(Status status) {
-                    if (status.isSuccess()) {
+                    if (status.isSuccess() && !stopped) {
                         JsonObject player = new JsonObject();
                         player.addProperty("endpointId", remoteEndpointId);
                         player.addProperty("deviceId", remoteDeviceId);
@@ -124,19 +125,30 @@ public class HostGameActivity extends Activity implements
         }
     }
 
+    private void generateText() {
+        String redText = "Red Team:\n";
+        String blueText = "Blue Team:\n";
+        for (int i = 0; i < players.size(); i++) {
+            String s = players.get(i).getAsJsonObject().get("endpointName").getAsString();
+            if (players.get(i).getAsJsonObject().has("barcode")) {
+                s += " :)";
+            }
+            s += "\n";
+            if (i % 2 == 0) {
+                redText += s;
+            } else {
+                blueText += s;
+            }
+        }
+        ((EditText) findViewById(R.id.red_team_players)).setText(redText);
+        ((EditText) findViewById(R.id.blue_team_players)).setText(blueText);
+    }
+
     private void addPlayer(JsonObject player) {
         // players passed into this function will not have known barcodes
         players.add(player);
         allPlayersReady = false;
-        JsonObject last = players.get(players.size() - 1).getAsJsonObject();
-        EditText editText;
-        if (players.size() % 2 == 1) {
-            //red
-            editText = (EditText) findViewById(R.id.red_team_players);
-        } else {
-            editText = (EditText) findViewById(R.id.blue_team_players);
-        }
-        editText.append(last.get("endpointName").getAsString() + "\n");
+        generateText();
     }
 
     @Override
@@ -251,5 +263,9 @@ public class HostGameActivity extends Activity implements
     public void buttonClick(View view) {
         gameName = ((EditText)findViewById(R.id.host_game_name)).getText().toString();
         start();
+    }
+
+    public void stopMorePlayers(View view) {
+        stopped = true;
     }
 }

@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="#FF0000"
+            android:textColor="#990000"
             android:textSize="70sp"
             android:text="0"/>
 
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
-            android:textColor="#0000FF"
+            android:textColor="#5677fc"
             android:textSize="70sp"
             android:text="0"/>
 

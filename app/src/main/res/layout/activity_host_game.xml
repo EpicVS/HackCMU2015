@@ -29,19 +29,26 @@
         android:layout_gravity="center"
         android:orientation="horizontal">
         <EditText
-            android:textColor="#FF0000"
+            android:textColor="#990000"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:background="@android:color/transparent"
             android:layout_weight="1"
             android:id="@+id/red_team_players" />
         <EditText
-            android:textColor="#0000FF"
+            android:textColor="#5677fc"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:layout_height="wrap_content"
             android:id="@+id/blue_team_players"/>
     </LinearLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="START GAME"
+        android:onClick="stopMorePlayers"
+        />
 
 </LinearLayout>
