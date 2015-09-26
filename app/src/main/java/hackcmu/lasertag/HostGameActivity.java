@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +35,7 @@ public class HostGameActivity extends Activity implements
 
     // Identify if the device is the host
     private boolean mIsHost = true;
-
+    private String gameName;
     private GoogleApiClient mGoogleApiClient;
 
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
@@ -56,7 +57,7 @@ public class HostGameActivity extends Activity implements
         if (!isConnectedToNetwork()) {
             // Implement logic when device is not connected to a network
         }
-        Log.d("Host", "isConnectedToNetwork terminated (good)");
+        Log.d("Host", "isConnectedToNetwork terminated (good)" + gameName);
 
         // Advertising with an AppIdentifer lets other devices on the
         // network discover this application and prompt the user to
@@ -69,8 +70,7 @@ public class HostGameActivity extends Activity implements
         // Positive values represent timeout in milliseconds
         long NO_TIMEOUT = 0L;
 
-        String name = "BACK"; // TODO: change this to the user-input game name
-        Nearby.Connections.startAdvertising(mGoogleApiClient, name, appMetadata, NO_TIMEOUT,
+        Nearby.Connections.startAdvertising(mGoogleApiClient, gameName, appMetadata, NO_TIMEOUT,
                 this).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
@@ -159,9 +159,7 @@ public class HostGameActivity extends Activity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    public void start() {
         mGoogleApiClient.connect();
         Log.d("Host", "Activity started.");
     }
@@ -194,5 +192,10 @@ public class HostGameActivity extends Activity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void buttonClick(View view) {
+        gameName = ((EditText)findViewById(R.id.host_game_name)).getText().toString();
+        start();
     }
 }
