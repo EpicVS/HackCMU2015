@@ -21,8 +21,12 @@ import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class JoinGameActivity extends Activity implements
@@ -38,6 +42,8 @@ public class JoinGameActivity extends Activity implements
     private String hostDeviceId = null;
     private String hostName = null;
     private GoogleApiClient mGoogleApiClient;
+    private ArrayList<String> availableEndpointIds = new ArrayList<String>();
+    private ArrayList<String> availableEndpointNames = new ArrayList<String>();
 
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
             ConnectivityManager.TYPE_ETHERNET};
@@ -85,17 +91,36 @@ public class JoinGameActivity extends Activity implements
         // This device is discovering endpoints and has located an advertiser.
         // Write your logic to initiate a connection with the device at
         // the endpoint ID
-        hostEndpointId = endpointId;
-        hostDeviceId = deviceId;
-        hostName = endpointName;
+
+        availableEndpointIds.add(endpointId);
+        availableEndpointNames.add(endpointName);
         Log.d("Client", "Endpoint found - name is " + endpointName);
-        connectTo(endpointId, endpointName);
+
+        // TODO: update on-screen list here
     }
 
     @Override
     public void onEndpointLost(String endpointId) {
         Log.d("Client", "onEndpointLost() called");
         // oh no the connection was lost do something
+        int i = availableEndpointIds.indexOf(endpointId);
+        availableEndpointIds.remove(i);
+        availableEndpointNames.remove(i);
+
+        // TODO: update on-screen list here
+    }
+
+    private void sendJson(JsonElement obj) {
+        Gson gson = new Gson();
+        Nearby.Connections.sendReliableMessage(
+                mGoogleApiClient,
+                hostEndpointId,
+                gson.toJson(obj).getBytes()
+        );
+    }
+
+    public void selectHost(int index) {
+        connectTo(availableEndpointIds.get(index), availableEndpointNames.get(index));
     }
 
     private void connectTo(String endpointId, final String endpointName) {
