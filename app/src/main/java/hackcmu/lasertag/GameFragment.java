@@ -52,6 +52,10 @@ public class GameFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_game, container, false);
+
+        redScore = (TextView) view.findViewById(R.id.red_team_score);
+        blueScore= (TextView) view.findViewById(R.id.blue_team_score);
+
         // Inflate the layout for this fragment
         ScanditView scanditView = new ScanditView(this.getActivity()) { //TODO: CHANGE
             public void onScan(ScanditSDKScanSession scanditSDKScanSession, Activity a) {
@@ -65,17 +69,19 @@ public class GameFragment extends Fragment {
                 }
             }
         };
-        ((FrameLayout) getActivity().findViewById(R.id.placeholder)).addView(scanditView);
+        ((FrameLayout) view.findViewById(R.id.placeholder)).addView(scanditView);
 
-        redScore = (TextView) view.findViewById(R.id.red_team_score);
-        blueScore= (TextView) view.findViewById(R.id.blue_team_score);
+
 
         return view;
     }
 
     public void updateScore(int red, int blue) {
-        redScore.setText(red+"");
-        blueScore.setText(blue+"");
+        if(redScore!=null && blueScore!=null){
+            redScore.setText(red+"");
+            blueScore.setText(blue+"");
+        }
+
     }
 
     public void onShoot(String barcode){
