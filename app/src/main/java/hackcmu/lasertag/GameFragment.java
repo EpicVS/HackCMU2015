@@ -76,9 +76,6 @@ public class GameFragment extends Fragment {
     }
 
     public void onShoot(String barcode){
-        Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-                "You have shot " + barcode + "!", Toast.LENGTH_SHORT);
-        toast.show();
         ((JoinGameActivity) getActivity()).sendShotBarcode(barcode);
     }
 

@@ -326,7 +326,7 @@ public class HostGameActivity extends Activity implements
     public void stopMorePlayers(View view) {
         stopped = true;
         if (allPlayersReady) {
-            //startGame();
+            startGame();
         }
     }
 }

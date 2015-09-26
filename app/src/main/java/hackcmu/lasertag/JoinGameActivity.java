@@ -26,7 +26,9 @@ import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,12 +139,6 @@ public class JoinGameActivity extends Activity implements
     @Override
     public void onEndpointFound(final String endpointId, String deviceId,
                                 String serviceId, final String endpointName) {
-        // This device is discovering endpoints and has located an advertiser.
-        // Write your logic to initiate a connection with the device at
-        // the endpoint ID
-        Toast.makeText(getApplicationContext(),
-                "endPoint found: "+endpointId+", "+deviceId+", "+serviceId+", "+endpointName , Toast.LENGTH_LONG)
-                .show();
 
         availableEndpointIds.add(endpointId);
         availableEndpointNames.add(endpointName);
@@ -221,7 +217,25 @@ public class JoinGameActivity extends Activity implements
 
     @Override
     public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
-        // Implement parsing logic to process message
+        if (endpointId.equals(this.hostEndpointId)) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            HashMap<String, String> map = gson.fromJson(new String(payload), type);
+            if (map.containsKey("gameStart")) {
+                //VARUN HERE WE SWITCH TO THE GAME FRAGMENT
+                //SET THE SCORE TO 0, 0
+            } else if (map.containsKey("target")) {
+                //write logic to deal with shooting
+                String shooter = map.get("shooter");
+                String target = map.get("target");
+                Toast.makeText(getApplicationContext(), shooter + " has shot " + target + "!", Toast.LENGTH_SHORT).show();
+                int redScore = Integer.getInteger(map.get("redScore"));
+                int blueScore = Integer.getInteger(map.get("blueScore"));
+                //VARUN SET THE SCORE HERE
+            } else if (map.containsKey("gameEnd")) {
+                //endgame
+            }
+        }
     }
 
     @Override
