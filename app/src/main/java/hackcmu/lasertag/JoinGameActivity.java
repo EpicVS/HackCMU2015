@@ -236,8 +236,8 @@ public class JoinGameActivity extends Activity implements
                 String shooter = map.get("shooter");
                 String target = map.get("target");
                 Toast.makeText(getApplicationContext(), shooter + " has shot " + target + "!", Toast.LENGTH_SHORT).show();
-                int redScore = Integer.getInteger(map.get("scoreRed"));
-                int blueScore = Integer.getInteger(map.get("scoreBlue"));
+                int redScore = Integer.parseInt(map.get("scoreRed"));
+                int blueScore = Integer.parseInt(map.get("scoreBlue"));
 
 
                 gameFragment.updateScore(redScore,blueScore);
