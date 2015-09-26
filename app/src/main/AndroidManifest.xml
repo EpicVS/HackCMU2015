@@ -24,6 +24,10 @@
             android:name=".JoinGameActivity"
             android:label="@string/title_activity_join_game" >
         </activity>
+        <activity
+            android:name=".HowToPlayActivity"
+            android:label="@string/title_activity_how_to_play" >
+        </activity>
     </application>
 
 </manifest>
