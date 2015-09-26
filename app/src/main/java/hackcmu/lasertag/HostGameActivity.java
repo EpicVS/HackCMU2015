@@ -128,6 +128,15 @@ public class HostGameActivity extends Activity implements
         // players passed into this function will not have known barcodes
         players.add(player);
         allPlayersReady = false;
+        JsonObject last = players.get(players.size() - 1).getAsJsonObject();
+        EditText editText;
+        if (players.size() % 2 == 1) {
+            //red
+            editText = (EditText) findViewById(R.id.red_team_players);
+        } else {
+            editText = (EditText) findViewById(R.id.blue_team_players);
+        }
+        editText.append(last.get("endpointName").getAsString() + "\n");
     }
 
     @Override
@@ -204,6 +213,8 @@ public class HostGameActivity extends Activity implements
 
     public void start() {
         mGoogleApiClient.connect();
+        ((EditText) findViewById(R.id.red_team_players)).setText("Red Team:\n");
+        ((EditText) findViewById(R.id.blue_team_players)).setText("Blue Team:\n");
         Log.d("Host", "Activity started.");
     }
 

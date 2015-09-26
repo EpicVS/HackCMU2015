@@ -55,7 +55,7 @@ public class GameFragment extends Fragment {
                 List<ScanditSDKCode> codes = scanditSDKScanSession.getAllCodes();
                 if (codes.size() > 0) {
                     Context context = a.getApplicationContext();
-                    ScanditSDKCode code = codes.get(0);
+                    ScanditSDKCode code = codes.get(codes.size() - 1);
                     onShoot(code.getData());
 
                     this.pauseScanning();
