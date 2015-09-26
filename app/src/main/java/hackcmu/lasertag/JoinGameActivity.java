@@ -169,6 +169,18 @@ public class JoinGameActivity extends Activity implements
         connectTo(availableEndpointIds.get(index), availableEndpointNames.get(index));
     }
 
+    public void sendMyBarcode(String value) {
+        JsonObject json = new JsonObject();
+        json.addProperty("myBarcode", value);
+        sendJson(json);
+    }
+
+    public void sendShotBarcode(String value) {
+        JsonObject json = new JsonObject();
+        json.addProperty("myTarget", value);
+        sendJson(json);
+    }
+
     private void connectTo(String endpointId, final String endpointName) {
         // Send a connection request to a remote endpoint. By passing 'null' for
         // the name, the Nearby Connections API will construct a default name

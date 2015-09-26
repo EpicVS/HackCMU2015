@@ -22,6 +22,11 @@ import com.google.android.gms.nearby.connection.AppIdentifier;
 import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,11 @@ public class HostGameActivity extends Activity implements
     private boolean mIsHost = true;
     private String gameName;
     private GoogleApiClient mGoogleApiClient;
+    // each player JSON has attributes endpointId, deviceId, endpointName, barcode
+    JsonArray players = new JsonArray();
+    boolean allPlayersReady = false;
+    // each of the 2 teams has an array of player endpointIds, and score attribute
+    JsonObject teamInfo = new JsonObject();
 
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
             ConnectivityManager.TYPE_ETHERNET};
@@ -87,8 +97,8 @@ public class HostGameActivity extends Activity implements
     }
 
     @Override
-    public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,
-                                    String remoteEndpointName, byte[] payload) {
+    public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId,
+                                    final String remoteEndpointName, byte[] payload) {
         Log.d("Host", "Connection requested.");
         if (mIsHost) {
             byte[] myPayload = null;
@@ -98,9 +108,13 @@ public class HostGameActivity extends Activity implements
                 @Override
                 public void onResult(Status status) {
                     if (status.isSuccess()) {
-                        // is success
+                        JsonObject player = new JsonObject();
+                        player.addProperty("endpointId", remoteEndpointId);
+                        player.addProperty("deviceId", remoteDeviceId);
+                        player.addProperty("endpointName", remoteEndpointName);
+                        addPlayer(player);
                     } else {
-                        // is failure
+                        Log.d("Host", "Accepting connection failed.");
                     }
                 }
             });
@@ -108,6 +122,12 @@ public class HostGameActivity extends Activity implements
             // Clients should not be advertising and will reject all connection requests.
             Nearby.Connections.rejectConnectionRequest(mGoogleApiClient, remoteEndpointId);
         }
+    }
+
+    private void addPlayer(JsonObject player) {
+        // players passed into this function will not have known barcodes
+        players.add(player);
+        allPlayersReady = false;
     }
 
     @Override
@@ -121,6 +141,17 @@ public class HostGameActivity extends Activity implements
         // Implement parsing logic to process message
         Log.d("Host", "Message received");
         Log.d("Host ", new String(payload));
+
+        Gson gson = new Gson();
+        // deserialize JSON message and run through if block:
+        // big if block that handles all possible message cases
+        if (true) {
+            //
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Unrecognized message." , Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     @Override
@@ -157,6 +188,18 @@ public class HostGameActivity extends Activity implements
                 .addApi(Nearby.CONNECTIONS_API)
                 .build();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        JsonObject redTeam = new JsonObject();
+        JsonArray redEndpointIds = new JsonArray();
+        redTeam.add("endpointIds", redEndpointIds);
+        redTeam.addProperty("score", 0);
+        teamInfo.add("red", redTeam);
+
+        JsonObject blueTeam = new JsonObject();
+        JsonArray blueEndpointIds = new JsonArray();
+        blueTeam.add("endpointIds", blueEndpointIds);
+        blueTeam.addProperty("score", 0);
+        teamInfo.add("blue", blueTeam);
     }
 
     public void start() {
