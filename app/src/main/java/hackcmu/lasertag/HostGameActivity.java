@@ -101,6 +101,23 @@ public class HostGameActivity extends Activity implements
         });
     }
 
+    public void startGame() {
+        Gson gson = new Gson();
+        JsonObject json = new JsonObject();
+        json.addProperty("beginScan", true);
+        sendAll(gson.toJson(json));
+    }
+
+    private void sendAll(String toSend) {
+        for (int i = 0; i < players.size(); i++) {
+            Nearby.Connections.sendReliableMessage(
+                    mGoogleApiClient,
+                    players.get(i).getAsJsonObject().get("endpointId").getAsString(),
+                    toSend.getBytes()
+            );
+        }
+    }
+
     @Override
     public void onConnectionRequest(final String remoteEndpointId, final String remoteDeviceId,
                                     final String remoteEndpointName, byte[] payload) {
@@ -206,6 +223,9 @@ public class HostGameActivity extends Activity implements
                 }
             }
             generateText();
+            if (stopped && allPlayersReady) {
+                startGame();
+            }
         } else {
             Toast.makeText(getApplicationContext(),
                     "Unrecognized message." , Toast.LENGTH_LONG)
