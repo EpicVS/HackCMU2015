@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,6 +37,8 @@ public class AvailableGamesFragment extends Fragment {
 //    private String mParam2;
 
     private ListView availableGamesList;
+    ArrayAdapter<String> adapter;
+    List<String> adapterData;
 
     // TODO: Rename and change types and number of parameters
     public static AvailableGamesFragment newInstance() {
@@ -52,33 +57,32 @@ public class AvailableGamesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
+
+//          if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_available_games, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_available_games, container, false);
 
+        adapterData = new ArrayList<String>();
 
-    public updateList(ArrayList<String> values){
+        availableGamesList = (ListView) view.findViewById(R.id.available_hosts_list);
 
-//        String[] arrayValues = values.toArray(new String[values.size()]);
+        adapter = new ArrayAdapter<String>(view.getContext(),
+                android.R.layout.simple_list_item_1, adapterData);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-
-        // Assign adapter to ListView
         availableGamesList.setAdapter(adapter);
 
-        // ListView Item Click Listener
+
         availableGamesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -96,11 +100,22 @@ public class AvailableGamesFragment extends Fragment {
                         "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
                         .show();
 
-
-
+                ((JoinGameActivity) getActivity()).selectHost(position);
             }
 
         });
+
+//        updateList(new ArrayList<String>());
+
+        return view;
+    }
+
+
+    public void updateList(List<String> values){
+        adapterData.clear();
+        adapterData.addAll(values);
+
+        ((BaseAdapter) availableGamesList.getAdapter()).notifyDataSetChanged();
     }
 
 }

@@ -1,6 +1,8 @@
 package hackcmu.lasertag;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -48,6 +50,47 @@ public class JoinGameActivity extends Activity implements
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
             ConnectivityManager.TYPE_ETHERNET};
 
+    private AvailableGamesFragment availableGamesFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_join_game);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Nearby.CONNECTIONS_API)
+                .build();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        availableGamesFragment = AvailableGamesFragment.newInstance();
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.available_games_fragment_holder, availableGamesFragment);
+        transaction.commit();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+
+
+
+
     private boolean isConnectedToNetwork() {
         ConnectivityManager connManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,12 +134,15 @@ public class JoinGameActivity extends Activity implements
         // This device is discovering endpoints and has located an advertiser.
         // Write your logic to initiate a connection with the device at
         // the endpoint ID
+        Toast.makeText(getApplicationContext(),
+                "endPoint found: "+endpointId+", "+deviceId+", "+serviceId+", "+endpointName , Toast.LENGTH_LONG)
+                .show();
 
         availableEndpointIds.add(endpointId);
         availableEndpointNames.add(endpointName);
         Log.d("Client", "Endpoint found - name is " + endpointName);
 
-        // TODO: update on-screen list here
+        availableGamesFragment.updateList(availableEndpointNames);
     }
 
     @Override
@@ -107,7 +153,7 @@ public class JoinGameActivity extends Activity implements
         availableEndpointIds.remove(i);
         availableEndpointNames.remove(i);
 
-        // TODO: update on-screen list here
+        availableGamesFragment.updateList(availableEndpointNames);
     }
 
     private void sendJson(JsonElement obj) {
@@ -127,6 +173,7 @@ public class JoinGameActivity extends Activity implements
         // Send a connection request to a remote endpoint. By passing 'null' for
         // the name, the Nearby Connections API will construct a default name
         // based on device model such as 'LGE Nexus 5'.
+        Log.d("Client", "endpointId="+endpointId+", "+"endpointName="+endpointName);
         String myName = null;
         byte[] myPayload = null;
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName,
@@ -179,32 +226,7 @@ public class JoinGameActivity extends Activity implements
         // connection failed -- do something maybe
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_join_game);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Nearby.CONNECTIONS_API)
-                .build();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
