@@ -16,12 +16,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_join_game">Tartan Tag</string>
     <string name="title_activity_how_to_play">How to Play</string>
-    <string name="how_to_play_text">\n\t This game is just like “Laser Tag”,
+    <string name="how_to_play_text">\n\t This game is just like “Laser Tag,"
         except that we are using our phone cameras instead of laser guns,
         and scanning QR codes on your friends’ clothes instead of shooting them with lasers!\n\n\t
         You can choose either to join a game or to host one and let your friends join.
-        To host a game, click “Host Game”,then pick a name for the game,
-        and wait for players to join! To join a game, click “Join Game”,
+        To host a game, click “Host Game,” then pick a name for the game,
+        and wait for players to join! To join a game, click “Join Game,"
         and then select the game you want to join."</string>
 
 <!-- TODO: Remove or change this placeholder text -->
