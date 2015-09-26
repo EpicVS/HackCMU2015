@@ -29,8 +29,7 @@ public class HostGameActivity extends Activity implements
     GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener,
     Connections.ConnectionRequestListener,
-    Connections.MessageListener,
-    Connections.EndpointDiscoveryListener {
+    Connections.MessageListener {
 
     // Identify if the device is the host
     private boolean mIsHost = false;
@@ -84,63 +83,6 @@ public class HostGameActivity extends Activity implements
                 }
             }
         });
-    }
-
-    private void startDiscovery() {
-        if (!isConnectedToNetwork()) {
-            // Implement logic when device is not connected to a network
-        }
-        String serviceId = getString(R.string.service_id);
-
-        // Set an appropriate timeout length in milliseconds
-        long DISCOVER_TIMEOUT = 1000L;
-
-        // Discover nearby apps that are advertising with the required service ID.
-        Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, this)
-                .setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        if (status.isSuccess()) {
-                            // Device is discovering
-                        } else {
-                            int statusCode = status.getStatusCode();
-                            // Advertising failed - see statusCode for more details
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void onEndpointFound(final String endpointId, String deviceId,
-                                String serviceId, final String endpointName) {
-        // This device is discovering endpoints and has located an advertiser.
-        // Write your logic to initiate a connection with the device at
-        // the endpoint ID
-    }
-
-    @Override
-    public void onEndpointLost(String endpointId) {
-        // oh no the connection was lost do something
-    }
-
-    private void connectTo(String endpointId, final String endpointName) {
-        // Send a connection request to a remote endpoint. By passing 'null' for
-        // the name, the Nearby Connections API will construct a default name
-        // based on device model such as 'LGE Nexus 5'.
-        String myName = null;
-        byte[] myPayload = null;
-        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName,
-                endpointId, myPayload, new Connections.ConnectionResponseCallback() {
-                    @Override
-                    public void onConnectionResponse(String remoteEndpointId, Status status,
-                                                     byte[] bytes) {
-                        if (status.isSuccess()) {
-                            // Successful connection
-                        } else {
-                            // Failed connection
-                        }
-                    }
-                }, this);
     }
 
     @Override

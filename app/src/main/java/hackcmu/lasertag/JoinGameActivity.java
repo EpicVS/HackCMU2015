@@ -1,11 +1,139 @@
 package hackcmu.lasertag;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
 
-public class JoinGameActivity extends Activity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.connection.AppIdentifier;
+import com.google.android.gms.nearby.connection.AppMetadata;
+import com.google.android.gms.nearby.connection.Connections;
+import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class JoinGameActivity extends Activity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        Connections.MessageListener,
+        Connections.EndpointDiscoveryListener {
+
+    // Identify if the device is the host
+    private boolean mIsHost = false;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
+            ConnectivityManager.TYPE_ETHERNET};
+
+    private boolean isConnectedToNetwork() {
+        ConnectivityManager connManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        for (int networkType : NETWORK_TYPES) {
+            NetworkInfo info = connManager.getNetworkInfo(networkType);
+            if (info != null && info.isConnectedOrConnecting()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void startDiscovery() {
+        if (!isConnectedToNetwork()) {
+            // Implement logic when device is not connected to a network
+        }
+        String serviceId = getString(R.string.service_id);
+
+        // Set an appropriate timeout length in milliseconds
+        long DISCOVER_TIMEOUT = 1000L;
+
+        // Discover nearby apps that are advertising with the required service ID.
+        Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, this)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        if (status.isSuccess()) {
+                            // Device is discovering
+                        } else {
+                            int statusCode = status.getStatusCode();
+                            // Advertising failed - see statusCode for more details
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onEndpointFound(final String endpointId, String deviceId,
+                                String serviceId, final String endpointName) {
+        // This device is discovering endpoints and has located an advertiser.
+        // Write your logic to initiate a connection with the device at
+        // the endpoint ID
+    }
+
+    @Override
+    public void onEndpointLost(String endpointId) {
+        // oh no the connection was lost do something
+    }
+
+    private void connectTo(String endpointId, final String endpointName) {
+        // Send a connection request to a remote endpoint. By passing 'null' for
+        // the name, the Nearby Connections API will construct a default name
+        // based on device model such as 'LGE Nexus 5'.
+        String myName = null;
+        byte[] myPayload = null;
+        Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName,
+                endpointId, myPayload, new Connections.ConnectionResponseCallback() {
+                    @Override
+                    public void onConnectionResponse(String remoteEndpointId, Status status,
+                                                     byte[] bytes) {
+                        if (status.isSuccess()) {
+                            // Successful connection
+                        } else {
+                            // Failed connection
+                        }
+                    }
+                }, this);
+    }
+
+    @Override
+    public void onDisconnected(String endpointId) {
+        // handle disconnection
+    }
+
+    @Override
+    public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
+        // Implement parsing logic to process message
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // add logic about handling suspended connection
+
+        // Try to re-connect
+        mGoogleApiClient.reconnect();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        // connected now -- maybe do stuff
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // connection failed -- do something maybe
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
