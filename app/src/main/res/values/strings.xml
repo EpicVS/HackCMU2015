@@ -15,4 +15,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_join_game">Join Game</string>
+    <string name="title_activity_how_to_play">How to Play</string>
 </resources>
