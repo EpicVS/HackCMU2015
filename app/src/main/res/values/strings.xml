@@ -17,7 +17,7 @@
     <string name="title_activity_join_game">Tartan Tag</string>
     <string name="title_activity_how_to_play">How to Play</string>
     <string name="how_to_play_text">
-         This game is just like “Laser Tag," except that we are using our phone cameras instead of laser guns, and scanning QR codes on your friends’ clothes instead of shooting them with lasers. \n You can choose either to join a game or to host one and let your friends join. \n To host a game, click “Host Game,” then pick a name for the game, and wait for players to join. \n To join a game, click “Join Game," and then select the game you want to join."</string>
+        \t\t\t This game is just like “Laser Tag," except that we are using our phone cameras instead of laser guns, and scanning QR codes on your friends’ clothes instead of shooting them with lasers. \n\t\t\t You can choose either to join a game or to host one and let your friends join. \n\t\t\t To host a game, click “Host Game,” then pick a name for the game, and wait for players to join. \n\t\t\t To join a game, click “Join Game," and then select the game you want to join."</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
