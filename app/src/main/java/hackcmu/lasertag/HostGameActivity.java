@@ -25,10 +25,13 @@ import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -43,7 +46,7 @@ public class HostGameActivity extends Activity implements
     private boolean stopped = false;
     private String gameName;
     private GoogleApiClient mGoogleApiClient;
-    // each player JSON has attributes endpointId, deviceId, endpointName, barcode
+    // each player JSON has attributes endpointId, deviceId, endpointName, barcode, and team
     JsonArray players = new JsonArray();
     boolean allPlayersReady = false;
     // each of the 2 teams has an array of player endpointIds, and score attribute
@@ -147,6 +150,16 @@ public class HostGameActivity extends Activity implements
     private void addPlayer(JsonObject player) {
         // players passed into this function will not have known barcodes
         players.add(player);
+        // add player to a team
+        int redSize = teamInfo.getAsJsonObject("red").getAsJsonArray("endpointIds").size();
+        int blueSize = teamInfo.getAsJsonObject("blue").getAsJsonArray("endpointIds").size();
+        if (redSize > blueSize) {
+            teamInfo.getAsJsonObject("blue").getAsJsonArray("endpointIds").add(player);
+            player.addProperty("team", "blue");
+        } else {
+            teamInfo.getAsJsonObject("red").getAsJsonArray("endpointIds").add(player);
+            player.addProperty("team", "red");
+        }
         allPlayersReady = false;
         generateText();
     }
@@ -164,10 +177,29 @@ public class HostGameActivity extends Activity implements
         Log.d("Host ", new String(payload));
 
         Gson gson = new Gson();
+        Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<String, String> map = gson.fromJson(new String(payload), type);
         // deserialize JSON message and run through if block:
         // big if block that handles all possible message cases
-        if (true) {
-            //
+        if (map.containsKey("myBarcode")) {
+            // add this barcode info to the corresponding player
+            boolean updated = false;
+            int i = 0;
+            while (!updated && i < players.size()) {
+                JsonObject player = players.get(i).getAsJsonObject();
+                if (player.get("endpointId").getAsString().equals(endpointId)) {
+                    player.addProperty("barcode", map.get("myBarcode"));
+                    updated = true;
+                }
+            }
+            // check whether all players are ready
+            allPlayersReady = true;
+            for (int j = 0; j < players.size(); j++) {
+                if (!players.get(i).getAsJsonObject().has("barcode")) {
+                    allPlayersReady = false;
+                }
+            }
+            generateText();
         } else {
             Toast.makeText(getApplicationContext(),
                     "Unrecognized message." , Toast.LENGTH_LONG)
