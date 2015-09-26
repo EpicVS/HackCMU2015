@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="android:colorPrimary">@color/custom_style_red</item>
         <item name="android:textColorPrimary">@color/custom_style_pale</item>
-        <item name="android:textColor">@color/custom_style_pale</item>
+        <item name="android:textColor">@color/custom_style_dark</item>
 
     </style>
 

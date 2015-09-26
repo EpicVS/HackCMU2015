@@ -12,6 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/host_game_name"
+        android:layout_margin="20dp"
         android:layout_centerHorizontal="true"
         android:hint="Game Name"   />
 
@@ -19,6 +20,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Host Game"
+        android:textColor="@color/custom_style_pale"
+        android:background="@color/custom_style_red"
+        android:textSize="20sp"
         android:id="@+id/host_game_btn"
         android:onClick="buttonClick"/>
 

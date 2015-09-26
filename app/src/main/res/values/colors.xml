@@ -5,4 +5,5 @@
     <item name="custom_style_orange" type="color">#FF9933</item>
     <item name="custom_style_pale" type="color">#EFEFEF</item>
     <item name="custom_style_red" type="color">#990000</item>
+    <item name="custom_style_dark" type="color">#303030</item>
 </resources>
