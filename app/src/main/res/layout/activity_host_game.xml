@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Host Game"
         android:layout_below="@+id/host_game_name"
-        android:id="@+id/host_game_btn" />
+        android:id="@+id/host_game_btn"
+        android:onClick="buttonClick"/>
 
 </RelativeLayout>
