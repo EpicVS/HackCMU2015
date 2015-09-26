@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,9 @@ public class JoinGameActivity extends Activity implements
     // Identify if the device is the host
     private boolean mIsHost = false;
 
+    private String hostEndpointId = null;
+    private String hostDeviceId = null;
+    private String hostName = null;
     private GoogleApiClient mGoogleApiClient;
 
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI,
@@ -57,7 +61,7 @@ public class JoinGameActivity extends Activity implements
         String serviceId = getString(R.string.service_id);
 
         // Set an appropriate timeout length in milliseconds
-        long DISCOVER_TIMEOUT = 1000L;
+        long DISCOVER_TIMEOUT = 100000L;
 
         // Discover nearby apps that are advertising with the required service ID.
         Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, this)
@@ -66,9 +70,10 @@ public class JoinGameActivity extends Activity implements
                     public void onResult(Status status) {
                         if (status.isSuccess()) {
                             // Device is discovering
+                            Log.d("Client", "Now discovering.");
                         } else {
                             int statusCode = status.getStatusCode();
-                            // Advertising failed - see statusCode for more details
+                            // Discovery failed - see statusCode for more details
                         }
                     }
                 });
@@ -80,10 +85,16 @@ public class JoinGameActivity extends Activity implements
         // This device is discovering endpoints and has located an advertiser.
         // Write your logic to initiate a connection with the device at
         // the endpoint ID
+        hostEndpointId = endpointId;
+        hostDeviceId = deviceId;
+        hostName = endpointName;
+        Log.d("Client", "Endpoint found - name is " + endpointName);
+        connectTo(endpointId, endpointName);
     }
 
     @Override
     public void onEndpointLost(String endpointId) {
+        Log.d("Client", "onEndpointLost() called");
         // oh no the connection was lost do something
     }
 
@@ -99,9 +110,12 @@ public class JoinGameActivity extends Activity implements
                     public void onConnectionResponse(String remoteEndpointId, Status status,
                                                      byte[] bytes) {
                         if (status.isSuccess()) {
-                            // Successful connection
+                            // send message for testing purposes
+                            byte[] payload = ("Hello, World! This is a message from client to the host named " + hostName).getBytes();
+                            Nearby.Connections.sendReliableMessage(mGoogleApiClient, hostEndpointId, payload);
+                            Log.d("Client", "Message sent.");
                         } else {
-                            // Failed connection
+                            Log.d("Client", "Connection request unsuccessful.");
                         }
                     }
                 }, this);
@@ -110,6 +124,7 @@ public class JoinGameActivity extends Activity implements
     @Override
     public void onDisconnected(String endpointId) {
         // handle disconnection
+        Log.d("Client", "onDisconnected() called");
     }
 
     @Override
@@ -119,6 +134,7 @@ public class JoinGameActivity extends Activity implements
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.d("Client", "onConnectionSuspended() called");
         // add logic about handling suspended connection
 
         // Try to re-connect
@@ -128,17 +144,41 @@ public class JoinGameActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         // connected now -- maybe do stuff
+        startDiscovery();
+        Log.d("Client", "Discovery started.");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("Client", "onConnectionFailed() called");
         // connection failed -- do something maybe
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_join_game);
+        setContentView(R.layout.activity_host_game);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Nearby.CONNECTIONS_API)
+                .build();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override

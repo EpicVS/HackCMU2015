@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,7 @@ public class HostGameActivity extends Activity implements
     Connections.MessageListener {
 
     // Identify if the device is the host
-    private boolean mIsHost = false;
+    private boolean mIsHost = true;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -55,9 +56,7 @@ public class HostGameActivity extends Activity implements
         if (!isConnectedToNetwork()) {
             // Implement logic when device is not connected to a network
         }
-
-        // Identify that this device is the host
-        mIsHost = true;
+        Log.d("Host", "isConnectedToNetwork terminated (good)");
 
         // Advertising with an AppIdentifer lets other devices on the
         // network discover this application and prompt the user to
@@ -70,16 +69,18 @@ public class HostGameActivity extends Activity implements
         // Positive values represent timeout in milliseconds
         long NO_TIMEOUT = 0L;
 
-        String name = null; // TODO: change this to the user-input game name
+        String name = "BACK"; // TODO: change this to the user-input game name
         Nearby.Connections.startAdvertising(mGoogleApiClient, name, appMetadata, NO_TIMEOUT,
                 this).setResultCallback(new ResultCallback<Connections.StartAdvertisingResult>() {
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
                 if (result.getStatus().isSuccess()) {
                     // Device is advertising
+                    Log.d("Host", "Now advertising.");
                 } else {
                     int statusCode = result.getStatus().getStatusCode();
                     // Advertising failed - see statusCode for more details
+                    Log.d("Host", "Advertising failed.");
                 }
             }
         });
@@ -88,6 +89,7 @@ public class HostGameActivity extends Activity implements
     @Override
     public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,
                                     String remoteEndpointName, byte[] payload) {
+        Log.d("Host", "Connection requested.");
         if (mIsHost) {
             byte[] myPayload = null;
             // Automatically accept all requests
@@ -111,15 +113,19 @@ public class HostGameActivity extends Activity implements
     @Override
     public void onDisconnected(String endpointId) {
         // handle disconnection
+        Log.d("Host", "onDisconnected() called");
     }
 
     @Override
     public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
         // Implement parsing logic to process message
+        Log.d("Host", "Message received");
+        Log.d("Host ", new String(payload));
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.d("Host", "onConnectionSuspended() called");
         // add logic about handling suspended connection
 
         // Try to re-connect
@@ -129,11 +135,15 @@ public class HostGameActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         // connected now -- maybe do stuff
+        Log.d("Host", "GoogleAPIs connected.");
+        startAdvertising();
+        Log.d("Host", "Advertising started.");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // connection failed -- do something maybe
+        Log.d("Host", "onConnectionFailed() called");
     }
 
     @Override
@@ -153,6 +163,7 @@ public class HostGameActivity extends Activity implements
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        Log.d("Host", "Activity started.");
     }
 
     @Override
