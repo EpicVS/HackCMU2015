@@ -190,10 +190,10 @@ public class HostGameActivity extends Activity implements
         int redSize = teamInfo.getAsJsonObject("red").getAsJsonArray("endpointIds").size();
         int blueSize = teamInfo.getAsJsonObject("blue").getAsJsonArray("endpointIds").size();
         if (redSize > blueSize) {
-            teamInfo.getAsJsonObject("blue").getAsJsonArray("endpointIds").add(player);
+            teamInfo.getAsJsonObject("blue").getAsJsonArray("endpointIds").add(player.get("endpointId"));
             player.addProperty("team", "blue");
         } else {
-            teamInfo.getAsJsonObject("red").getAsJsonArray("endpointIds").add(player);
+            teamInfo.getAsJsonObject("red").getAsJsonArray("endpointIds").add(player.get("endpointId"));
             player.addProperty("team", "red");
         }
         allPlayersReady = false;
