@@ -104,7 +104,21 @@ public class HostGameActivity extends Activity implements
     public void startGame() {
         Gson gson = new Gson();
         JsonObject json = new JsonObject();
-        json.addProperty("beginScan", true);
+        json.addProperty("gameStart", true);
+        sendAll(gson.toJson(json));
+    }
+
+    public void shootEvent(String targetName, String shooterName,
+                            int scoreRed, int scoreBlue,
+                            String targetBarcode, String shooterBarcode) {
+        Gson gson = new Gson();
+        JsonObject json = new JsonObject();
+        json.addProperty("target", targetName);
+        json.addProperty("shooter", shooterName);
+        json.addProperty("scoreRed", scoreRed);
+        json.addProperty("scoreBlue", scoreBlue);
+        json.addProperty("targetBarcode", targetBarcode);
+        json.addProperty("shooterBarcode", shooterBarcode);
         sendAll(gson.toJson(json));
     }
 
@@ -226,11 +240,70 @@ public class HostGameActivity extends Activity implements
             if (stopped && allPlayersReady) {
                 startGame();
             }
+        } else if (map.containsKey("myTarget")) {
+            // update scores
+            //  check which team got hit
+            String shotBarcode = map.get("myTarget");
+            boolean redGotShot = false;
+            JsonArray redEndpointIds = teamInfo
+                    .get("red").getAsJsonObject()
+                    .get("endpointIds").getAsJsonArray();
+            for (int i = 0; i < redEndpointIds.size(); i++) {
+                if (getBarcodeFromEndpointId(redEndpointIds.get(i).getAsString())
+                        .equals(shotBarcode)) {
+                    redGotShot = true;
+                }
+            }
+            //  update that team score value
+            int redScore = -1;
+            redScore = teamInfo.get("red").getAsJsonObject().get("score").getAsInt();
+            int blueScore = -1;
+            blueScore = teamInfo.get("blue").getAsJsonObject().get("score").getAsInt();
+
+            if (redGotShot) {
+                teamInfo.get("blue").getAsJsonObject().remove("score");
+                blueScore++;
+                teamInfo.get("blue").getAsJsonObject().addProperty("score", blueScore);
+            } else {
+                teamInfo.get("red").getAsJsonObject().remove("score");
+                redScore++;
+                teamInfo.get("red").getAsJsonObject().addProperty("score", redScore);
+            }
+            // send out shoot event
+            String targetName = "";
+            String shooterName = "";
+            String shooterBarcode = "";
+            for (int i = 0; i < players.size(); i++) {
+                JsonObject o = players.get(i).getAsJsonObject();
+                if (o.get("barcode").getAsString().equals(shotBarcode)) {
+                    targetName = o.get("endpointName").getAsString();
+                }
+                if (o.get("endpointId").getAsString().equals(endpointId)) {
+                    shooterName = o.get("endpointName").getAsString();
+                    shooterBarcode = o.get("barcode").getAsString();
+                }
+            }
+            shootEvent(targetName, shooterName, redScore, blueScore, shotBarcode, shooterBarcode);
+            // check if game is over
+            int scoreCap = 5;
+            if (redScore >= scoreCap || blueScore >= scoreCap) {
+                sendAll("{gameEnd:true}");
+            }
         } else {
-            Toast.makeText(getApplicationContext(),
+            Toast.makeText(getApplicationContext(), 
                     "Unrecognized message." , Toast.LENGTH_LONG)
                     .show();
         }
+    }
+
+    String getBarcodeFromEndpointId(String endpointId) {
+        for (int i = 0; i < players.size(); i++) {
+            JsonObject player = players.get(i).getAsJsonObject();
+            if (player.get("endpointId").getAsString().equals(endpointId)) {
+                return player.get("barcode").getAsString();
+            }
+        }
+        return null;
     }
 
     @Override
