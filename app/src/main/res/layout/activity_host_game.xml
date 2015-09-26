@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/host_game_name"
         android:layout_margin="20dp"
+        android:textColor="@color/custom_style_dark"
         android:layout_centerHorizontal="true"
         android:hint="Game Name"   />
 
@@ -32,14 +33,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-        <EditText
+        <TextView
             android:textColor="#990000"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:background="@android:color/transparent"
             android:layout_weight="1"
             android:id="@+id/red_team_players" />
-        <EditText
+        <TextView
             android:textColor="#5677fc"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -51,7 +52,11 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@color/custom_style_red"
+        android:textColor="@color/custom_style_pale"
+        android:textSize="20sp"
         android:text="START GAME"
+
         android:onClick="stopMorePlayers"
         />
 

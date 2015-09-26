@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -128,7 +129,12 @@ public class HostGameActivity extends Activity implements
         }
     }
 
+    private void generateToast(String toastMe) {
+        Toast.makeText(getApplicationContext(), toastMe, Toast.LENGTH_SHORT).show();
+    }
+
     private void generateText() {
+        generateToast("generate_text");
         String redText = "Red Team:\n";
         String blueText = "Blue Team:\n";
         for (int i = 0; i < players.size(); i++) {
@@ -143,8 +149,8 @@ public class HostGameActivity extends Activity implements
                 blueText += s;
             }
         }
-        ((EditText) findViewById(R.id.red_team_players)).setText(redText);
-        ((EditText) findViewById(R.id.blue_team_players)).setText(blueText);
+        ((TextView) findViewById(R.id.red_team_players)).setText(redText);
+        ((TextView) findViewById(R.id.blue_team_players)).setText(blueText);
     }
 
     private void addPlayer(JsonObject player) {
@@ -172,6 +178,7 @@ public class HostGameActivity extends Activity implements
 
     @Override
     public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
+        generateToast("message_receieved");
         // Implement parsing logic to process message
         Log.d("Host", "Message received");
         Log.d("Host ", new String(payload));
@@ -190,6 +197,7 @@ public class HostGameActivity extends Activity implements
                 if (player.get("endpointId").getAsString().equals(endpointId)) {
                     player.addProperty("barcode", map.get("myBarcode"));
                     updated = true;
+                    generateToast("HOORAY!" + player.get("endpointName").getAsString());
                 }
             }
             // check whether all players are ready
@@ -257,8 +265,8 @@ public class HostGameActivity extends Activity implements
 
     public void start() {
         mGoogleApiClient.connect();
-        ((EditText) findViewById(R.id.red_team_players)).setText("Red Team:\n");
-        ((EditText) findViewById(R.id.blue_team_players)).setText("Blue Team:\n");
+        ((TextView) findViewById(R.id.red_team_players)).setText("Red Team:\n");
+        ((TextView) findViewById(R.id.blue_team_players)).setText("Blue Team:\n");
         Log.d("Host", "Activity started.");
     }
 
