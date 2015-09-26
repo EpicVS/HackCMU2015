@@ -88,18 +88,6 @@ public class AvailableGamesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-
-                // ListView Clicked item value
-                String  itemValue    = (String) availableGamesList.getItemAtPosition(position);
-
-                // Show Alert
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "Position :"+itemPosition+"  ListItem : " +itemValue , Toast.LENGTH_LONG)
-                        .show();
-
                 ((JoinGameActivity) getActivity()).selectHost(position);
             }
 

@@ -51,6 +51,10 @@ public class JoinGameActivity extends Activity implements
             ConnectivityManager.TYPE_ETHERNET};
 
     private AvailableGamesFragment availableGamesFragment;
+    private CodeScanningFragment codeScanningFragment;
+    private GameFragment gameFragment;
+
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,10 @@ public class JoinGameActivity extends Activity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         availableGamesFragment = AvailableGamesFragment.newInstance();
+        codeScanningFragment = CodeScanningFragment.newInstance();
+        gameFragment = GameFragment.newInstance();
 
-        FragmentManager fm = getFragmentManager();
+        fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.replace(R.id.available_games_fragment_holder, availableGamesFragment);
         transaction.commit();
@@ -167,6 +173,9 @@ public class JoinGameActivity extends Activity implements
 
     public void selectHost(int index) {
         connectTo(availableEndpointIds.get(index), availableEndpointNames.get(index));
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.available_games_fragment_holder, codeScanningFragment);
+        transaction.commit();
     }
 
     public void sendMyBarcode(String value) {
