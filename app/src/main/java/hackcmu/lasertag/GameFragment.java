@@ -89,7 +89,7 @@ public class GameFragment extends Fragment {
     }
 
     public void gameOver(){
-        TextView t = new TextView(getContext());
+        TextView t = new TextView(getActivity().getApplicationContext());
         t.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         t.setTextSize(60);
         t.setText("Game Over");
