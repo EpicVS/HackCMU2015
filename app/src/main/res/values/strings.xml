@@ -11,8 +11,4 @@
     <string name="action_example">Example action</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_host_game">Host Game</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_join_game">Join Game</string>
 </resources>
