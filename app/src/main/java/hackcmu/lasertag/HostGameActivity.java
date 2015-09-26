@@ -134,7 +134,6 @@ public class HostGameActivity extends Activity implements
     }
 
     private void generateText() {
-        generateToast("generate_text");
         String redText = "Red Team:\n";
         String blueText = "Blue Team:\n";
         for (int i = 0; i < players.size(); i++) {
@@ -178,7 +177,6 @@ public class HostGameActivity extends Activity implements
 
     @Override
     public void onMessageReceived(String endpointId, byte[] payload, boolean isReliable) {
-        generateToast("message_receieved");
         // Implement parsing logic to process message
         Log.d("Host", "Message received");
         Log.d("Host ", new String(payload));
@@ -197,8 +195,8 @@ public class HostGameActivity extends Activity implements
                 if (player.get("endpointId").getAsString().equals(endpointId)) {
                     player.addProperty("barcode", map.get("myBarcode"));
                     updated = true;
-                    generateToast("HOORAY!" + player.get("endpointName").getAsString());
                 }
+                i++;
             }
             // check whether all players are ready
             allPlayersReady = true;
@@ -307,5 +305,8 @@ public class HostGameActivity extends Activity implements
 
     public void stopMorePlayers(View view) {
         stopped = true;
+        if (allPlayersReady) {
+            //startGame();
+        }
     }
 }
