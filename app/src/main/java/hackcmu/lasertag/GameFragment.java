@@ -50,6 +50,8 @@ public class GameFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_game, container, false);
         // Inflate the layout for this fragment
         ScanditView scanditView = new ScanditView(this.getActivity()) { //TODO: CHANGE
             public void onScan(ScanditSDKScanSession scanditSDKScanSession, Activity a) {
@@ -65,10 +67,10 @@ public class GameFragment extends Fragment {
         };
         ((FrameLayout) getActivity().findViewById(R.id.placeholder)).addView(scanditView);
 
-        redScore = (TextView) getActivity().findViewById(R.id.red_team_score);
-        blueScore= (TextView) getActivity().findViewById(R.id.blue_team_score);
+        redScore = (TextView) view.findViewById(R.id.red_team_score);
+        blueScore= (TextView) view.findViewById(R.id.blue_team_score);
 
-        return inflater.inflate(R.layout.fragment_game, container, false);
+        return view;
     }
 
     public void updateScore(int red, int blue) {
