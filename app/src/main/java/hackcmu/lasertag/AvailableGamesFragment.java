@@ -67,7 +67,7 @@ public class AvailableGamesFragment extends Fragment {
     }
 
 
-    public updateList(ArrayList<String> values){
+    public void updateList(ArrayList<String> values){
 
 //        String[] arrayValues = values.toArray(new String[values.size()]);
 
