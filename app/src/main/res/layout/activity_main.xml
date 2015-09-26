@@ -6,7 +6,9 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -15,18 +17,30 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Host Game"
-        android:id="@+id/host_game_btn" />
+        android:id="@+id/host_game_btn"
+        android:layout_weight="0.2"
+        android:layout_marginBottom="50dp"
+        android:textSize="20sp"
+        android:background="@color/custom_style_red"
+        android:layout_marginTop="50dp"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Join Game"
-        android:id="@+id/join_game_btn" />
+        android:id="@+id/join_game_btn"
+        android:layout_weight="0.2"
+        android:textSize="20sp"
+        android:background="@color/custom_style_red"
+        android:layout_marginBottom="50dp"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="How to Play"
-        android:id="@+id/how_to_play_btn" />
+        android:id="@+id/how_to_play_btn"
+        android:textSize="20sp"
+        android:background="@color/custom_style_red"
+        android:layout_weight="0.2" />
 
 </LinearLayout>
